@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum HitType
 {
@@ -19,6 +20,8 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private int perfectScore = 3;
     [SerializeField] private int goodScore = 2;
 
+    public UnityAction OnScoreChanged;
+
     private void Awake()
     {
         if (Instance == null)
@@ -30,6 +33,16 @@ public class ScoreManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Start()
+    {
+        Tile.OnTileDestroyed += OnTileDestroyed;
+    }
+
+    private void OnDestroy()
+    {
+        Tile.OnTileDestroyed -= OnTileDestroyed;
     }
 
     public void OnTileDestroyed(HitType hitType)
@@ -48,5 +61,6 @@ public class ScoreManager : MonoBehaviour
         {
             Combo = 0; // Reset combo on miss
         }
+        OnScoreChanged?.Invoke();
     }
 }

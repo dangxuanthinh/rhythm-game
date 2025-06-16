@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Lean.Pool;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,11 @@ using UnityEngine.Events;
 public class Tile : MonoBehaviour
 {
     public float timeStamp;
+
+    [SerializeField] private AudioClip hitAudio;
+    [SerializeField] private AudioClip missAudio;
+    private AudioSource audioSource;
+
     private double spawnTime;
     private SpriteRenderer spriteRenderer;
 
@@ -20,7 +26,25 @@ public class Tile : MonoBehaviour
 
     public static UnityAction<HitType> OnTileDestroyed;
 
-    void Update()
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void OnEnable()
+    {
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.enabled = true;
+        spriteRenderer.color = Color.white;
+    }
+
+    private void OnDisable()
+    {
+        spriteRenderer.enabled = false;
+    }
+
+    private void Update()
     {
         double elapsed = SongManager.Instance.GetSongPlaybackTime() - spawnTime;
 
@@ -58,12 +82,32 @@ public class Tile : MonoBehaviour
         distanceToEndPosition = Vector2.Distance(startPosition, endPosition);
 
         // Speed so that tile reaches perfectPosition at noteLifeTime
-        speed = distanceToPerfectPosition / (float)SongManager.Instance.noteLifeTime;
+        speed = distanceToPerfectPosition / (float)SongManager.Instance.NoteLifeTime;
     }
 
     public void DestroyTile(HitType hitType)
     {
         OnTileDestroyed?.Invoke(hitType);
-        LeanPool.Despawn(this);
+
+        if (hitType == HitType.Miss)
+            PlayMissAnimation();
+        else
+        {
+            audioSource.PlayOneShot(hitAudio);
+            PlayHitAnimation();
+        }
+    }
+
+    private void PlayHitAnimation()
+    {
+        spriteRenderer.DOFade(0f, 0.2f).OnComplete(() =>
+        {
+            LeanPool.Despawn(this);
+        });
+    }
+
+    private void PlayMissAnimation()
+    {
+
     }
 }

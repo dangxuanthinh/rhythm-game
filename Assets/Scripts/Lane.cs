@@ -34,7 +34,7 @@ public class Lane : MonoBehaviour
         foreach (Note note in notes)
         {
             if (note.NoteName != noteName) continue;
-            MetricTimeSpan metricTimeSpan = TimeConverter.ConvertTo<MetricTimeSpan>(note.Time, SongManager.Instance.midiFile.GetTempoMap());
+            MetricTimeSpan metricTimeSpan = TimeConverter.ConvertTo<MetricTimeSpan>(note.Time, SongManager.Instance.GetTempoMap());
             timeStamps.Add((double)metricTimeSpan.Minutes * 60f + metricTimeSpan.Seconds + (double)metricTimeSpan.Milliseconds / 1000f);
         }
     }
@@ -43,9 +43,9 @@ public class Lane : MonoBehaviour
     {
         if (spawnIndex < timeStamps.Count)
         {
-            if (SongManager.Instance.GetSongPlaybackTime() >= timeStamps[spawnIndex] - SongManager.Instance.noteLifeTime)
+            if (SongManager.Instance.GetSongPlaybackTime() >= timeStamps[spawnIndex] - SongManager.Instance.NoteLifeTime)
             {
-                Tile tile = LeanPool.Spawn(tilePrefab, transform);
+                Tile tile = LeanPool.Spawn(tilePrefab, Vector2.one * 1000f, Quaternion.identity, transform);
                 spawnedTiles.Add(tile);
                 tile.Setup(transform.position, (float)timeStamps[spawnIndex]);
                 spawnIndex++;
@@ -55,29 +55,32 @@ public class Lane : MonoBehaviour
         if (inputIndex < timeStamps.Count)
         {
             double timeStamp = timeStamps[inputIndex];
-            double marginOfError = SongManager.Instance.marginOfError;
-            double audioTime = SongManager.Instance.GetSongPlaybackTime() - (SongManager.Instance.inputDelayInMilliseconds / 1000);
+            double marginOfError = SongManager.Instance.MarginOfError;
+            double audioTime = SongManager.Instance.GetSongPlaybackTime();
 
             if (Input.GetKeyDown(input))
             {
-                if (Math.Abs(audioTime - timeStamp) < marginOfError)
+                double timingDifference = Math.Abs(audioTime - timeStamp);
+                if (timingDifference < marginOfError)
                 {
-                    // Hit
+                    HitType hitType;
+                    if (timingDifference < marginOfError / 2f)
+                    {
+                        hitType = HitType.Perfect;
+                    }
+                    else
+                    {
+                        hitType = HitType.Good;
+                    }
                     if (spawnedTiles[inputIndex] != null)
                     {
-                        spawnedTiles[inputIndex].DestroyTile(HitType.Perfect);
+                        spawnedTiles[inputIndex].DestroyTile(hitType);
                     }
                     inputIndex++;
-                }
-                else
-                {
-                    //print($"Hit inaccurate on {inputIndex} note with {Math.Abs(audioTime - timeStamp)} delay");
                 }
             }
             if (timeStamp + marginOfError <= audioTime)
             {
-                // Miss
-                //print($"Missed {inputIndex} note");
                 spawnedTiles[inputIndex].DestroyTile(HitType.Miss);
                 inputIndex++;
             }

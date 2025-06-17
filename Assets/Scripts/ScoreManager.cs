@@ -16,6 +16,7 @@ public class ScoreManager : MonoBehaviour
 
     public int Score { get; private set; }
     public int Combo { get; private set; }
+    public int MaxCombo { get; private set; }
 
     [SerializeField] private int perfectScore = 3;
     [SerializeField] private int goodScore = 2;
@@ -50,17 +51,26 @@ public class ScoreManager : MonoBehaviour
         if (hitType == HitType.Perfect)
         {
             Score += perfectScore;
-            Combo++;
+            IncreaseCombo();
         }
         else if (hitType == HitType.Good)
         {
             Score += goodScore;
-            Combo++;
+            IncreaseCombo();
         }
         else if (hitType == HitType.Miss)
         {
             Combo = 0; // Reset combo on miss
         }
         OnScoreChanged?.Invoke();
+    }
+
+    private void IncreaseCombo()
+    {
+        Combo++;
+        if (MaxCombo < Combo)
+        {
+            MaxCombo = Combo;
+        }
     }
 }

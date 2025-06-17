@@ -16,3 +16,5 @@ MonoBehaviour:
   midiFilePath: passacaglia.mid
   songName: Passacaglia
   artistName: SynthWulf
+  bpm: 175
+  songPreviewPoint: 0.583

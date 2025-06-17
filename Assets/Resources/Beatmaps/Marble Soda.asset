@@ -16,3 +16,5 @@ MonoBehaviour:
   midiFilePath: marble_soda.mid
   songName: Marble Soda
   artistName: Shawn Wasabi
+  bpm: 168
+  songPreviewPoint: 0.4335

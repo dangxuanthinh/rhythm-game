@@ -1,7 +1,9 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,11 +40,14 @@ public class GameManager : MonoBehaviour
     {
         if (GameOver) return;
         GameOver = true;
+        float timeScale = 1f;
+        DOTween.To(() => timeScale, x => timeScale = x, 0.3f, 1f);
         OnGameOver?.Invoke();
     }
 
     public void StartGame(BeatmapData beatmapData)
     {
         SongManager.Instance.InitializeMap(beatmapData);
+        SceneLoader.Instance.LoadScene("Gameplay");
     }
 }

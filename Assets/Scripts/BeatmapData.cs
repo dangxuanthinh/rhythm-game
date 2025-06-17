@@ -11,4 +11,7 @@ public class BeatmapData : ScriptableObject
     [Header("Music info")]
     public string songName;
     public string artistName;
+    public int bpm;
+    [Range(0, 1)]
+    public float songPreviewPoint;
 }

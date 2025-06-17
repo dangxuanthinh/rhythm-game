@@ -28,6 +28,7 @@ public class Lane : MonoBehaviour
     private void Start()
     {
         Tile.OnHoldAutoComplete += OnHoldAutoComplete;
+        Setup(SongManager.Instance.GetNotes());
     }
 
     private void OnDestroy()
@@ -43,10 +44,14 @@ public class Lane : MonoBehaviour
         }
     }
 
-    public void SetTimeStamps(Note[] notes)
+    public void Setup(Note[] notes)
     {
         foreach (Note note in notes)
         {
+            if(note.NoteName != NoteName.F && note.NoteName != NoteName.G && note.NoteName != NoteName.A && note.NoteName != NoteName.B)
+            {
+                Debug.LogError("CHECK MAP");
+            }
             if (note.NoteName != noteName) continue;
 
             MetricTimeSpan length = LengthConverter.ConvertTo<MetricTimeSpan>(note.Length, note.Time, SongManager.Instance.GetTempoMap());

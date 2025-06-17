@@ -1,10 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
-using System;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class SongManager : MonoBehaviour
 {
@@ -12,18 +11,21 @@ public class SongManager : MonoBehaviour
 
     [field: SerializeField] public double NoteLifeTime { get; private set; } // Time from when the note spawns to when it's 100% perfect to tap
     [field: SerializeField] public double MarginOfError { get; private set; } // How far off you can be from the perfect time to get a "Perfect" tap
+    [field: SerializeField] public float SongDelaySeconds { get; private set; }
 
     // Define base constants for note life time and margin of error
     // This makes it easier to scale the game speed if we want to
     private const double BASE_NOTE_LIFE_TIME = 1f;
-    private const double BASE_MARGIN_OF_ERROR = 0.15f;
+    private const double BASE_MARGIN_OF_ERROR = 0.18f;
 
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private float songDelaySeconds;
-    [SerializeField] private List<Lane> lanes = new List<Lane>();
 
     private MidiFile midiFile;
     private bool songDistorted;
+
+    private BeatmapData beatmapData;
+    private Note[] notes;
+    private float songPlayBackTimeOffset;
 
     private void Awake()
     {
@@ -41,6 +43,7 @@ public class SongManager : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.OnGameOver += DistortSong;
+        SceneManager.sceneLoaded += SceneLoaded;
 
         ScaleMarginOfError();
     }
@@ -48,14 +51,22 @@ public class SongManager : MonoBehaviour
     private void OnDestroy()
     {
         GameManager.Instance.OnGameOver -= DistortSong;
+        SceneManager.sceneLoaded -= SceneLoaded;
+    }
+
+    private void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        if (scene.name == "Gameplay")
+        {
+            StartCoroutine(StartSong());
+        }
     }
 
     public void InitializeMap(BeatmapData beatmapData)
     {
+        this.beatmapData = beatmapData;
         audioSource.clip = beatmapData.music;
         ReadMIDIFromFile(beatmapData.midiFilePath);
-        InitializeLanes();
-        StartCoroutine(StartSong());
     }
 
     private void DistortSong()
@@ -63,11 +74,16 @@ public class SongManager : MonoBehaviour
         if (songDistorted) return;
         songDistorted = true;
         float pitch = 1f;
-        DOTween.To(() => pitch, x => pitch = x, 0.3f, 1f)
+        DOTween.To(() => pitch, x => pitch = x, 0.1f, 1.5f)
             .OnUpdate(() => audioSource.pitch = pitch).OnComplete(() =>
             {
-                audioSource.Stop();
-            }).SetDelay(2f);
+                DOVirtual.DelayedCall(1.2f, () =>
+                {
+                    audioSource.Stop();
+                    audioSource.pitch = 1f;
+                    songDistorted = false;
+                });
+            });
     }
 
     // Scale margin of error, if noteLifeTime is big -> notes move slower -> more margin of error -> easier to tap
@@ -83,7 +99,7 @@ public class SongManager : MonoBehaviour
 
     public TempoMap GetTempoMap()
     {
-        if(midiFile == null)
+        if (midiFile == null)
         {
             Debug.LogError("MIDI file not loaded");
             return null;
@@ -91,27 +107,52 @@ public class SongManager : MonoBehaviour
         return midiFile.GetTempoMap();
     }
 
-    public void InitializeLanes()
+    public Note[] GetNotes()
     {
-        // Get all the notes from MIDI file and give them to lanes
-        var notes = midiFile.GetNotes();
-        var array = new Note[notes.Count];
-        notes.CopyTo(array, 0);
-        foreach (Lane lane in lanes)
+        if (notes == null)
         {
-            lane.SetTimeStamps(array);
+            var notesFromMIDI = midiFile.GetNotes();
+            notes = new Note[notesFromMIDI.Count];
+            notesFromMIDI.CopyTo(notes, 0);
         }
+        return notes;
     }
 
     private IEnumerator StartSong()
     {
         // The game starts when the song plays
-        yield return new WaitForSeconds(songDelaySeconds);
+        songPlayBackTimeOffset = -SongDelaySeconds;
+        StartCoroutine(IncreaseSongPlayBackOffset());
+        audioSource.Stop();
+        yield return new WaitForSeconds(SongDelaySeconds);
         audioSource.Play();
+    }
+
+    IEnumerator IncreaseSongPlayBackOffset()
+    {
+        while (songPlayBackTimeOffset < 0)
+        {
+            songPlayBackTimeOffset += Time.deltaTime;
+            yield return null;
+        }
+        songPlayBackTimeOffset = 0f;
     }
 
     public double GetSongPlaybackTime()
     {
-        return (double)audioSource.timeSamples / audioSource.clip.frequency;
+        return ((double)audioSource.timeSamples / audioSource.clip.frequency) + songPlayBackTimeOffset;
+    }
+
+    public void PlaySongPreview(AudioClip music, float startPoint)
+    {
+        audioSource.Stop();
+        audioSource.clip = music;
+        audioSource.time = startPoint * audioSource.clip.length;
+        audioSource.Play();
+    }
+
+    public int GetSongBPM()
+    {
+        return beatmapData.bpm;
     }
 }

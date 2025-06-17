@@ -1,30 +1,37 @@
-using DG.Tweening;
 using Lean.Pool;
+using Melanchall.DryWetMidi.Core;
+using Melanchall.DryWetMidi.MusicTheory;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class Tile : MonoBehaviour
 {
-    public float timeStamp;
-
     [SerializeField] private AudioClip hitAudio;
     [SerializeField] private AudioClip missAudio;
-    private AudioSource audioSource;
+    [SerializeField] private NoteHeldVisual noteHeldVisualPrefab;
+    [SerializeField] private TileVisual tileVisual;
 
-    private double spawnTime;
-    private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;
 
     private Vector2 startPosition;
     private Vector2 perfectPosition;
-    private Vector2 endPosition;
 
-    private float distanceToPerfectPosition;
-    private float distanceToEndPosition;
-    private float speed;
+    private float moveSpeed;
 
+    public bool IsHolding { get; private set; }
+
+    public bool Held { get; private set; }
+
+    private float holdElapsed;
+    private float holdProgress;
+
+    private NoteHeldVisual currentHeldVisual;
+    private TileData tileData;
+
+    public static UnityAction<TileData> OnHoldAutoComplete;
     public static UnityAction<HitType> OnTileDestroyed;
+    public static UnityAction OnTileMissed;
 
     private void Awake()
     {
@@ -33,56 +40,90 @@ public class Tile : MonoBehaviour
 
     private void OnEnable()
     {
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.enabled = true;
-        spriteRenderer.color = Color.white;
-    }
-
-    private void OnDisable()
-    {
-        spriteRenderer.enabled = false;
+        tileVisual.Show();
     }
 
     private void Update()
     {
-        double elapsed = SongManager.Instance.GetSongPlaybackTime() - spawnTime;
-
-        // Calculate how far the tile should have traveled at constant speed
-        float traveled = (float)elapsed * speed;
-
-        // Clamp to the total distance
-        if (traveled >= distanceToEndPosition)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        // Interpolate position along the path
-        float t = traveled / distanceToEndPosition;
-        transform.position = Vector2.Lerp(startPosition, endPosition, t);
-
-        if (spriteRenderer != null)
-            spriteRenderer.enabled = true;
+        MoveTile();
+        HandleTileHolding();
     }
 
-    public void Setup(Vector2 lanePosition, float timeStamp)
+    private void HandleTileHolding()
     {
-        this.timeStamp = timeStamp;
-        spawnTime = SongManager.Instance.GetSongPlaybackTime();
+        if (tileData.tileType == TileType.Hold && IsHolding)
+        {
+            holdElapsed += Time.deltaTime;
+            holdProgress = Mathf.Clamp01((float)(holdElapsed / tileData.length));
 
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            if (holdProgress >= 1f)
+            {
+                EndHoldAutoComplete();
+            }
+        }
+    }
+
+    private void MoveTile()
+    {
+        float newY = transform.position.y - moveSpeed * Time.deltaTime;
+        transform.position = new Vector2(startPosition.x, newY);
+    }
+
+    public void Setup(Vector2 lanePosition, TileData data)
+    {
+        this.tileData = data;
+        Held = false;
 
         startPosition = new Vector2(lanePosition.x, Camera.main.ViewportToWorldPoint(Vector2.one).y + 1);
         perfectPosition = new Vector2(lanePosition.x, lanePosition.y);
-        endPosition = new Vector2(lanePosition.x, Camera.main.ViewportToWorldPoint(Vector2.zero).y - 1);
+        transform.position = startPosition;
 
-        distanceToPerfectPosition = Vector2.Distance(startPosition, perfectPosition);
-        distanceToEndPosition = Vector2.Distance(startPosition, endPosition);
+        float distanceToPerfectPosition = Vector2.Distance(startPosition, perfectPosition);
+        moveSpeed = distanceToPerfectPosition / (float)SongManager.Instance.NoteLifeTime;
 
-        // Speed so that tile reaches perfectPosition at noteLifeTime
-        speed = distanceToPerfectPosition / (float)SongManager.Instance.NoteLifeTime;
+        if (tileData.tileType == TileType.Hold)
+        {
+            float initialSizeY = moveSpeed * (float)tileData.length;
+            tileVisual.SetupHold(initialSizeY);
+            holdElapsed = 0f;
+            IsHolding = false;
+        }
+        else
+        {
+            tileVisual.SetupTap();
+        }
+    }
+
+    public void StartHold()
+    {
+        if (tileData.tileType == TileType.Hold)
+        {
+            Held = true;
+            IsHolding = true;
+            holdElapsed = 0f;
+
+            NoteHeldVisual heldVisual = LeanPool.Spawn(noteHeldVisualPrefab, new Vector2(transform.position.x, Lane.CoordinateY), Quaternion.identity);
+            heldVisual.Setup(moveSpeed, transform.position);
+            currentHeldVisual = heldVisual;
+        }
+    }
+
+    private void EndHoldAutoComplete()
+    {
+        OnHoldAutoComplete?.Invoke(tileData);
+        EndHold();
+    }
+
+    public void EndHold()
+    {
+        IsHolding = false;
+        HitType hitType = holdProgress > 0.8f ? HitType.Perfect : HitType.Good;
+        if (currentHeldVisual != null)
+        {
+            currentHeldVisual.Hide();
+            currentHeldVisual = null;
+        }
+        DestroyTile(hitType);
     }
 
     public void DestroyTile(HitType hitType)
@@ -90,24 +131,24 @@ public class Tile : MonoBehaviour
         OnTileDestroyed?.Invoke(hitType);
 
         if (hitType == HitType.Miss)
-            PlayMissAnimation();
+        {
+            Debug.Log("MISS");
+            OnTileMissed?.Invoke();
+            tileVisual.PlayMissAnimation(() => LeanPool.Despawn(this, 2f));
+        }
         else
         {
-            audioSource.PlayOneShot(hitAudio);
-            PlayHitAnimation();
+            tileVisual.PlayHitAnimation(() => LeanPool.Despawn(this, 2f));
         }
     }
 
-    private void PlayHitAnimation()
+    public NoteName GetNoteName()
     {
-        spriteRenderer.DOFade(0f, 0.2f).OnComplete(() =>
-        {
-            LeanPool.Despawn(this);
-        });
+        return tileData.noteName;
     }
 
-    private void PlayMissAnimation()
+    public TileType GetTileType()
     {
-
+        return tileData.tileType;
     }
 }

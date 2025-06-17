@@ -2,7 +2,6 @@ using Melanchall.DryWetMidi.Interaction;
 using Melanchall.DryWetMidi.MusicTheory;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 using Note = Melanchall.DryWetMidi.Interaction.Note;
 using Lean.Pool;
@@ -10,23 +9,38 @@ using Lean.Pool;
 public class Lane : MonoBehaviour
 {
     [SerializeField] private NoteName noteName;
-
     [SerializeField] private Tile tilePrefab;
+    [SerializeField] private KeyCode input; // Keyboard input
 
-    private List<double> timeStamps = new List<double>();
+    private List<TileData> tilesData = new List<TileData>();
+    private List<Tile> spawnedTiles = new List<Tile>();
 
     private int spawnIndex;
     private int inputIndex;
 
-    private List<Tile> spawnedTiles = new List<Tile>();
-
-    public KeyCode input;
-
-    public static float LaneY { get; private set; }
+    public static float CoordinateY { get; private set; }
 
     private void Awake()
     {
-        LaneY = transform.position.y;
+        CoordinateY = transform.position.y;
+    }
+
+    private void Start()
+    {
+        Tile.OnHoldAutoComplete += OnHoldAutoComplete;
+    }
+
+    private void OnDestroy()
+    {
+        Tile.OnHoldAutoComplete += OnHoldAutoComplete;
+    }
+
+    private void OnHoldAutoComplete(TileData tileData)
+    {
+        if(tileData.noteName == noteName)
+        {
+            AdvanceInputIndex();
+        }
     }
 
     public void SetTimeStamps(Note[] notes)
@@ -34,56 +48,38 @@ public class Lane : MonoBehaviour
         foreach (Note note in notes)
         {
             if (note.NoteName != noteName) continue;
-            MetricTimeSpan metricTimeSpan = TimeConverter.ConvertTo<MetricTimeSpan>(note.Time, SongManager.Instance.GetTempoMap());
-            timeStamps.Add((double)metricTimeSpan.Minutes * 60f + metricTimeSpan.Seconds + (double)metricTimeSpan.Milliseconds / 1000f);
+
+            MetricTimeSpan length = LengthConverter.ConvertTo<MetricTimeSpan>(note.Length, note.Time, SongManager.Instance.GetTempoMap());
+            double tileLength = length.Minutes * 60f + length.Seconds + (double)length.Milliseconds / 1000f;
+            TileType tileType = tileLength > 0.5f ? TileType.Hold : TileType.Tap;
+
+            MetricTimeSpan timeStamp = TimeConverter.ConvertTo<MetricTimeSpan>(note.Time, SongManager.Instance.GetTempoMap());
+            double tileTimeStamp = (double)timeStamp.Minutes * 60f + timeStamp.Seconds + (double)timeStamp.Milliseconds / 1000f;
+
+            tilesData.Add(new TileData(tileType, tileTimeStamp, tileLength, note.NoteName));
         }
     }
 
     private void Update()
     {
-        if (spawnIndex < timeStamps.Count)
-        {
-            if (SongManager.Instance.GetSongPlaybackTime() >= timeStamps[spawnIndex] - SongManager.Instance.NoteLifeTime)
-            {
-                Tile tile = LeanPool.Spawn(tilePrefab, Vector2.one * 1000f, Quaternion.identity, transform);
-                spawnedTiles.Add(tile);
-                tile.Setup(transform.position, (float)timeStamps[spawnIndex]);
-                spawnIndex++;
-            }
-        }
+        TrySpawnTile();
+    }
 
-        if (inputIndex < timeStamps.Count)
-        {
-            double timeStamp = timeStamps[inputIndex];
-            double marginOfError = SongManager.Instance.MarginOfError;
-            double audioTime = SongManager.Instance.GetSongPlaybackTime();
+    private void TrySpawnTile()
+    {
+        if (spawnIndex >= tilesData.Count) return;
 
-            if (Input.GetKeyDown(input))
-            {
-                double timingDifference = Math.Abs(audioTime - timeStamp);
-                if (timingDifference < marginOfError)
-                {
-                    HitType hitType;
-                    if (timingDifference < marginOfError / 2f)
-                    {
-                        hitType = HitType.Perfect;
-                    }
-                    else
-                    {
-                        hitType = HitType.Good;
-                    }
-                    if (spawnedTiles[inputIndex] != null)
-                    {
-                        spawnedTiles[inputIndex].DestroyTile(hitType);
-                    }
-                    inputIndex++;
-                }
-            }
-            if (timeStamp + marginOfError <= audioTime)
-            {
-                spawnedTiles[inputIndex].DestroyTile(HitType.Miss);
-                inputIndex++;
-            }
+        if (SongManager.Instance.GetSongPlaybackTime() >= tilesData[spawnIndex].timeStamp - SongManager.Instance.NoteLifeTime)
+        {
+            Tile tile = LeanPool.Spawn(tilePrefab, Vector2.one * 1000f, Quaternion.identity, transform);
+            spawnedTiles.Add(tile);
+            tile.Setup(transform.position, tilesData[spawnIndex]);
+            spawnIndex++;
         }
     }
+
+    public bool HasTileToProcess => inputIndex < tilesData.Count && inputIndex < spawnedTiles.Count;
+    public Tile CurrentTile => spawnedTiles[inputIndex];
+    public TileData CurrentTileData => tilesData[inputIndex];
+    public void AdvanceInputIndex() => inputIndex++;
 }

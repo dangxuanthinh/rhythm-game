@@ -10,6 +10,8 @@ public class BackgroundVisualHandler : MonoBehaviour
     private void Start()
     {
         Tile.OnTileDestroyed += LightUp;
+
+        lightDecoration.transform.position = new Vector2(0f, Camera.main.ViewportToWorldPoint(new Vector3(1f, 0.9f, Camera.main.transform.position.z)).y);
     }
 
     private void OnDestroy()

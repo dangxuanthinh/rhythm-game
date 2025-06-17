@@ -4,6 +4,7 @@ using UnityEngine;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using System;
+using DG.Tweening;
 
 public class SongManager : MonoBehaviour
 {
@@ -15,15 +16,14 @@ public class SongManager : MonoBehaviour
     // Define base constants for note life time and margin of error
     // This makes it easier to scale the game speed if we want to
     private const double BASE_NOTE_LIFE_TIME = 1f;
-    private const double BASE_MARGIN_OF_ERROR = 0.13f;
+    private const double BASE_MARGIN_OF_ERROR = 0.15f;
 
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private float songDelaySeconds;
-    [SerializeField] private string fileLocation;
-
     [SerializeField] private List<Lane> lanes = new List<Lane>();
 
     private MidiFile midiFile;
+    private bool songDistorted;
 
     private void Awake()
     {
@@ -38,13 +38,36 @@ public class SongManager : MonoBehaviour
         }
     }
 
-    private IEnumerator Start()
+    private void Start()
     {
+        GameManager.Instance.OnGameOver += DistortSong;
+
         ScaleMarginOfError();
-        ReadMIDIFromFile();
-        InitializeMapFromMIDI();
-        yield return new WaitForSeconds(0f);
-        StartSong();
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.OnGameOver -= DistortSong;
+    }
+
+    public void InitializeMap(BeatmapData beatmapData)
+    {
+        audioSource.clip = beatmapData.music;
+        ReadMIDIFromFile(beatmapData.midiFilePath);
+        InitializeLanes();
+        StartCoroutine(StartSong());
+    }
+
+    private void DistortSong()
+    {
+        if (songDistorted) return;
+        songDistorted = true;
+        float pitch = 1f;
+        DOTween.To(() => pitch, x => pitch = x, 0.3f, 1f)
+            .OnUpdate(() => audioSource.pitch = pitch).OnComplete(() =>
+            {
+                audioSource.Stop();
+            }).SetDelay(2f);
     }
 
     // Scale margin of error, if noteLifeTime is big -> notes move slower -> more margin of error -> easier to tap
@@ -53,9 +76,9 @@ public class SongManager : MonoBehaviour
         MarginOfError = BASE_MARGIN_OF_ERROR * (NoteLifeTime / BASE_NOTE_LIFE_TIME);
     }
 
-    private void ReadMIDIFromFile()
+    private void ReadMIDIFromFile(string fileName)
     {
-        midiFile = MidiFile.Read(Application.streamingAssetsPath + "/" + fileLocation);
+        midiFile = MidiFile.Read(Application.streamingAssetsPath + "/" + fileName);
     }
 
     public TempoMap GetTempoMap()
@@ -68,8 +91,9 @@ public class SongManager : MonoBehaviour
         return midiFile.GetTempoMap();
     }
 
-    public void InitializeMapFromMIDI()
+    public void InitializeLanes()
     {
+        // Get all the notes from MIDI file and give them to lanes
         var notes = midiFile.GetNotes();
         var array = new Note[notes.Count];
         notes.CopyTo(array, 0);
@@ -79,9 +103,10 @@ public class SongManager : MonoBehaviour
         }
     }
 
-    private void StartSong()
+    private IEnumerator StartSong()
     {
         // The game starts when the song plays
+        yield return new WaitForSeconds(songDelaySeconds);
         audioSource.Play();
     }
 

@@ -6,6 +6,7 @@ using UnityEngine;
 public class BackgroundVisualHandler : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer lightDecoration;
+    [SerializeField] private SpriteRenderer hitLineDecoration;
 
     private void Start()
     {
@@ -19,7 +20,7 @@ public class BackgroundVisualHandler : MonoBehaviour
         Tile.OnTileDestroyed -= LightUp;
     }
 
-    private void LightUp(HitType hitType)
+    private void LightUp(Tile tile, HitType hitType)
     {
         if(hitType == HitType.Miss) // No VFX on miss
         {
@@ -29,6 +30,12 @@ public class BackgroundVisualHandler : MonoBehaviour
         lightDecoration.DOFade(1f, 0.2f).OnComplete(() =>
         {
             lightDecoration.DOFade(0.6f, 0.1f).SetDelay(0.05f);
+        });
+
+        hitLineDecoration.DOKill();
+        hitLineDecoration.DOFade(1f, 0.2f).OnComplete(() =>
+        {
+            hitLineDecoration.DOFade(0.5f, 0.4f).SetDelay(0.1f);
         });
     }
 }

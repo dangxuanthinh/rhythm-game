@@ -30,7 +30,7 @@ public class Tile : MonoBehaviour
     private TileData tileData;
 
     public static UnityAction<TileData> OnHoldAutoComplete;
-    public static UnityAction<HitType> OnTileDestroyed;
+    public static UnityAction<Tile, HitType> OnTileDestroyed;
     public static UnityAction OnTileMissed;
 
     private void Awake()
@@ -128,7 +128,7 @@ public class Tile : MonoBehaviour
 
     public void DestroyTile(HitType hitType)
     {
-        OnTileDestroyed?.Invoke(hitType);
+        OnTileDestroyed?.Invoke(this, hitType);
 
         if (hitType == HitType.Miss)
         {

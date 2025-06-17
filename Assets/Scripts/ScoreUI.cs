@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreUI : MonoBehaviour
 {
@@ -47,7 +48,7 @@ public class ScoreUI : MonoBehaviour
         comboText.rectTransform.DOScale(Vector3.one, 0.2f).OnComplete(() => comboText.rectTransform.DOScale(Vector3.zero, 0.15f).SetDelay(0.5f));
     }
 
-    private void PlayTextAnimation(HitType hitType)
+    private void PlayTextAnimation(Tile tile, HitType hitType)
     {
         if (hitType == HitType.Miss) return;
         perfectText.SetActive(false);

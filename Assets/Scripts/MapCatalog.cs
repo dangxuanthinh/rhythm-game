@@ -6,7 +6,6 @@ using UnityEngine;
 public class MapCatalog : MonoBehaviour
 {
     public static MapCatalog Instance;
-
     private List<BeatmapData> maps = new List<BeatmapData>();
 
     private void Awake()
@@ -21,8 +20,8 @@ public class MapCatalog : MonoBehaviour
             Destroy(gameObject);
         }
         LoadMaps();
-
     }
+
     public void LoadMaps()
     {
         maps = Resources.LoadAll<BeatmapData>("Beatmaps").ToList();

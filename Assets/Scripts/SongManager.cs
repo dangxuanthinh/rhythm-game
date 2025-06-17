@@ -16,7 +16,7 @@ public class SongManager : MonoBehaviour
     // Define base constants for note life time and margin of error
     // This makes it easier to scale the game speed if we want to
     private const double BASE_NOTE_LIFE_TIME = 1f;
-    private const double BASE_MARGIN_OF_ERROR = 0.18f;
+    private const double BASE_MARGIN_OF_ERROR = 0.15f;
 
     [SerializeField] private AudioSource audioSource;
 
@@ -74,10 +74,10 @@ public class SongManager : MonoBehaviour
         if (songDistorted) return;
         songDistorted = true;
         float pitch = 1f;
-        DOTween.To(() => pitch, x => pitch = x, 0.1f, 1.5f)
+        DOTween.To(() => pitch, x => pitch = x, 0.3f, 1.3f)
             .OnUpdate(() => audioSource.pitch = pitch).OnComplete(() =>
             {
-                DOVirtual.DelayedCall(1.2f, () =>
+                DOVirtual.DelayedCall(1f, () =>
                 {
                     audioSource.Stop();
                     audioSource.pitch = 1f;

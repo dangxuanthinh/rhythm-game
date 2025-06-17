@@ -3,14 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameOverUI : MonoBehaviour
 {
     [SerializeField] private RectTransform texts;
-    private CanvasGroup canvasGroup;
-
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI comboText;
+
+    [SerializeField] private Button exitButton;
+
+    private CanvasGroup canvasGroup;
 
     private void Awake()
     {
@@ -20,6 +23,11 @@ public class GameOverUI : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.OnGameOver += ShowGameOver;
+
+        exitButton.onClick.AddListener(() =>
+        {
+            SceneLoader.Instance.LoadScene("MapSelect");
+        });
     }
 
     private void OnDestroy()

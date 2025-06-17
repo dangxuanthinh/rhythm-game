@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public bool GameOver { get; private set; }
 
     public UnityAction OnGameOver;
+    public UnityAction OnGameStart;
 
     private void Awake()
     {
@@ -47,7 +48,9 @@ public class GameManager : MonoBehaviour
 
     public void StartGame(BeatmapData beatmapData)
     {
+        OnGameStart?.Invoke();
         SongManager.Instance.InitializeMap(beatmapData);
         SceneLoader.Instance.LoadScene("Gameplay");
+        GameOver = false;
     }
 }

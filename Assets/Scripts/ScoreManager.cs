@@ -39,14 +39,16 @@ public class ScoreManager : MonoBehaviour
     private void Start()
     {
         Tile.OnTileDestroyed += OnTileDestroyed;
+        GameManager.Instance.OnGameStart += RefreshScore;
     }
 
     private void OnDestroy()
     {
         Tile.OnTileDestroyed -= OnTileDestroyed;
+        GameManager.Instance.OnGameStart -= RefreshScore;
     }
 
-    public void OnTileDestroyed(HitType hitType)
+    public void OnTileDestroyed(Tile tile, HitType hitType)
     {
         if (hitType == HitType.Perfect)
         {
@@ -72,5 +74,13 @@ public class ScoreManager : MonoBehaviour
         {
             MaxCombo = Combo;
         }
+    }
+
+    private void RefreshScore()
+    {
+        Score = 0;
+        Combo = 0;
+        MaxCombo = 0;
+        OnScoreChanged?.Invoke();
     }
 }

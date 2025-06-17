@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraHandler : MonoBehaviour
 {
-    public float targetSceneWidth = 4.1f;
+    public float targetSceneWidth = 4.2f;
     public float laneYPosition = -2.5f;
     private Camera cam;
 

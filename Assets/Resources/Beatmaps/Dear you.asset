@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9800b147e16a30d43a22785f5cf76bab, type: 3}
-  m_Name: Marble Soda
+  m_Name: Dear you
   m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: 7db8e05e2709c9246917288c2a7f8a39, type: 3}
-  midiFilePath: marble_soda.mid
-  songName: Marble Soda
-  artistName: Shawn Wasabi
-  bpm: 168
-  songPreviewPoint: 0.4335
+  music: {fileID: 8300000, guid: f8379d2a36af9dc4f9325c394c1c1818, type: 3}
+  midiFilePath: dear_you.mid
+  songName: Dear you
+  artistName: DJ Genericname
+  bpm: 174
+  songPreviewPoint: 0.276

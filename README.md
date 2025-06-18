@@ -55,3 +55,4 @@ The project mainly utilizes the Singleton and Observer pattern, this allows for 
 - [Dotween](https://assetstore.unity.com/packages/tools/utilities/lean-pool-35666?srsltid=AfmBOornci8W9T76f5De7f59USnpcFLBvNClUPp1WZlutIhlxy_B1eUd) for tweening, animating game objects
 - [DryWetMIDI](https://assetstore.unity.com/packages/tools/audio/drywetmidi-222171?srsltid=AfmBOooppkbds4H1AtaIar4xY8gFMU7WHoGao2LLru-i7cmMndUjdQi8) for reading and handling midi files
     - DryWetMIDI Github repo: https://github.com/melanchall/drywetmidi
+- [FL Studio](https://www.image-line.com) for beatmap creation

@@ -38,6 +38,7 @@ public class SongSelectPanel : MonoBehaviour
         selectedMap = beatmapData;
         SongManager.Instance.PlaySongPreview(beatmapData.music, beatmapData.songPreviewPoint);
 
+        // Make the "Song select" text pulse to the beat of the song
         beatInterval = 60f / beatmapData.bpm;
         if (pulseCoroutine != null)
         {

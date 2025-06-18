@@ -77,7 +77,6 @@ public class MapCatalog : MonoBehaviour
         }
     }
 #else
-        // On other platforms, use standard file IO
         if (!System.IO.File.Exists(path))
         {
             Debug.LogError("MIDI file not found: " + path);

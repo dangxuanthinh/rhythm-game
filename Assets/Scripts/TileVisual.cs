@@ -40,7 +40,7 @@ public class TileVisual : MonoBehaviour
     {
         noteHoldIndicator.SetActive(true);
         initialSizeY = sizeY;
-        var size = spriteRenderer.size;
+        Vector2 size = spriteRenderer.size;
         size.y = initialSizeY;
         spriteRenderer.size = size;
         noteHoldLineSpriteRenderer.size = new Vector2(noteHoldLineSpriteRenderer.size.x, initialSizeY - TILE_BASE_HEIGHT);

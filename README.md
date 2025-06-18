@@ -56,3 +56,7 @@ The project utilizes the Singleton and Observer pattern, this allows for decoupl
 - [Dotween](https://assetstore.unity.com/packages/tools/utilities/lean-pool-35666?srsltid=AfmBOornci8W9T76f5De7f59USnpcFLBvNClUPp1WZlutIhlxy_B1eUd) for tweening, animating game objects
 - [DryWetMIDI](https://assetstore.unity.com/packages/tools/audio/drywetmidi-222171?srsltid=AfmBOooppkbds4H1AtaIar4xY8gFMU7WHoGao2LLru-i7cmMndUjdQi8) for reading and handling midi files
     - DryWetMIDI Github repo: https://github.com/melanchall/drywetmidi
+## Gameplay screen shots:
+![level_select](https://github.com/user-attachments/assets/343af011-4d6b-497b-aab1-d59c286444e7)
+![gameplay](https://github.com/user-attachments/assets/1c6f3c73-4181-44be-9dac-f38e2015237f)
+

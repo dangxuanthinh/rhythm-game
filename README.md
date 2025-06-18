@@ -56,3 +56,8 @@ The project mainly utilizes the Singleton and Observer pattern, this allows for 
 - [DryWetMIDI](https://assetstore.unity.com/packages/tools/audio/drywetmidi-222171?srsltid=AfmBOooppkbds4H1AtaIar4xY8gFMU7WHoGao2LLru-i7cmMndUjdQi8) for reading and handling midi files
     - DryWetMIDI Github repo: https://github.com/melanchall/drywetmidi
 - [FL Studio](https://www.image-line.com) for beatmap creation
+
+## Game screen shots
+![level_select](https://github.com/user-attachments/assets/0299bf8d-1d8b-4240-90ff-c241a3ef7587)
+![gameplay](https://github.com/user-attachments/assets/bf67876e-0c22-4ff8-a710-7b16da240096)
+

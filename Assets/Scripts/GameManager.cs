@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     public UnityAction OnGameOver;
     public UnityAction OnGameStart;
+    public UnityAction OnGameVictory;
 
     private void Awake()
     {
@@ -27,22 +27,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
     private void Start()
     {
         Tile.OnTileMissed += EndGame;
+        SongManager.Instance.OnSongFinished += GameVictory;
+
+        Application.targetFrameRate = 120;
     }
 
     private void OnDestroy()
     {
         Tile.OnTileMissed -= EndGame;
+        SongManager.Instance.OnSongFinished -= GameVictory;
+    }
+
+    private void GameVictory()
+    {
+        OnGameVictory?.Invoke();
     }
 
     public void EndGame()
     {
         if (GameOver) return;
         GameOver = true;
-        float timeScale = 1f;
-        DOTween.To(() => timeScale, x => timeScale = x, 0.3f, 1f);
         OnGameOver?.Invoke();
     }
 

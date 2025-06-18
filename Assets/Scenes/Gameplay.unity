@@ -329,6 +329,7 @@ GameObject:
   - component: {fileID: 328282163}
   - component: {fileID: 328282162}
   - component: {fileID: 328282164}
+  - component: {fileID: 328282165}
   m_Layer: 0
   m_Name: Lane 2
   m_TagString: Untagged
@@ -379,6 +380,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputKey: 102
+  inputDelay: 0.015
+--- !u!61 &328282165
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328282161}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2.11}
+  m_EdgeRadius: 0
 --- !u!1 &344391117
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,6 +1219,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   perfectScore: 3
   goodScore: 2
+  comboMultiplierStep: 0.05
+  maxMultiplier: 5
 --- !u!1 &805563134
 GameObject:
   m_ObjectHideFlags: 0
@@ -1237,7 +1267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NoteLifeTime>k__BackingField: 1
-  <MarginOfError>k__BackingField: 0.15
+  <MarginOfError>k__BackingField: 0.23000000417232513
   <SongDelaySeconds>k__BackingField: 2
   audioSource: {fileID: 805563137}
 --- !u!82 &805563137
@@ -1250,7 +1280,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 7db8e05e2709c9246917288c2a7f8a39, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0.484
   m_Pitch: 1
@@ -2028,7 +2058,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2049477dff64118409a5d7824f388f96, type: 2}
+  - {fileID: 2100000, guid: e6b41253d7a8283448b413e42f786d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17032,6 +17062,7 @@ GameObject:
   - component: {fileID: 1530854846}
   - component: {fileID: 1530854845}
   - component: {fileID: 1530854847}
+  - component: {fileID: 1530854848}
   m_Layer: 0
   m_Name: Lane 3
   m_TagString: Untagged
@@ -17082,6 +17113,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputKey: 106
+  inputDelay: 0.015
+--- !u!61 &1530854848
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1530854844}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2.11}
+  m_EdgeRadius: 0
 --- !u!1 &1535589818
 GameObject:
   m_ObjectHideFlags: 0
@@ -17228,6 +17286,7 @@ GameObject:
   - component: {fileID: 1592808534}
   - component: {fileID: 1592808533}
   - component: {fileID: 1592808535}
+  - component: {fileID: 1592808536}
   m_Layer: 0
   m_Name: Lane 1
   m_TagString: Untagged
@@ -17278,6 +17337,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputKey: 100
+  inputDelay: 0.015
+--- !u!61 &1592808536
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1592808532}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2.11}
+  m_EdgeRadius: 0
 --- !u!1 &1609961204
 GameObject:
   m_ObjectHideFlags: 0
@@ -17289,6 +17375,7 @@ GameObject:
   - component: {fileID: 1609961206}
   - component: {fileID: 1609961205}
   - component: {fileID: 1609961207}
+  - component: {fileID: 1609961208}
   m_Layer: 0
   m_Name: Lane 4
   m_TagString: Untagged
@@ -17339,6 +17426,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputKey: 107
+  inputDelay: 0.015
+--- !u!61 &1609961208
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609961204}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2.11}
+  m_EdgeRadius: 0
 --- !u!1 &1639047339
 GameObject:
   m_ObjectHideFlags: 0
@@ -17471,6 +17585,7 @@ MonoBehaviour:
   texts: {fileID: 1257595284}
   scoreText: {fileID: 1813838714}
   comboText: {fileID: 422079738}
+  gameOverText: {fileID: 344391119}
   exitButton: {fileID: 837781020}
 --- !u!225 &1773771511
 CanvasGroup:

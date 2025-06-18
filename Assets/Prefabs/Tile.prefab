@@ -47,15 +47,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 798748a7715f991438dfab9eefe20438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeStamp: 0
   hitAudio: {fileID: 8300000, guid: 8d9243010e48cc441b9e98a9745288a9, type: 3}
   missAudio: {fileID: 0}
   noteHeldVisualPrefab: {fileID: 7311862510167376970, guid: e517159d547c2134a860d2156bd1b91e, type: 3}
   tileVisual: {fileID: 2766305105177840468}
-  tileType: 0
-  IsHolding: 0
-  Held: 0
-  length: 0
 --- !u!82 &2185253477879804474
 AudioSource:
   m_ObjectHideFlags: 0
@@ -168,9 +163,9 @@ MonoBehaviour:
   noteHoldIndicator: {fileID: 2279993286860526733}
   noteHoldLineSpriteRenderer: {fileID: 3942838510356047077}
   holdNoteTopGradient: {r: 0.19668922, g: 0.19668922, b: 0.6415094, a: 1}
-  tapNoteTopGradient: {r: 0.07058824, g: 0.07058824, b: 0.33333334, a: 1}
+  tapNoteTopGradient: {r: 0.17246087, g: 0.12615702, b: 0.5943396, a: 1}
   holdNoteBottomGradient: {r: 0.07058824, g: 0.07058824, b: 0.33333334, a: 1}
-  tapNoteBottomGradient: {r: 0.07058824, g: 0.07058824, b: 0.33333334, a: 1}
+  tapNoteBottomGradient: {r: 0.10702208, g: 0.117545255, b: 0.3490566, a: 1}
   missColor: {r: 0.8396226, g: 0.13861692, b: 0.1603873, a: 1}
 --- !u!1 &1141700372953527278
 GameObject:

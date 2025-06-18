@@ -9,6 +9,7 @@ public class NoteHeldVisual : MonoBehaviour
     private float speed;
     private SpriteRenderer spriteRenderer;
     [SerializeField] private Color color;
+    [SerializeField] private ParticleSystem particle;
     
     private void Update()
     {
@@ -22,10 +23,12 @@ public class NoteHeldVisual : MonoBehaviour
         float initialSizeY = Mathf.Abs(Lane.CoordinateY - currentTilePosition.y);
         spriteRenderer.size = new Vector2(spriteRenderer.size.x, initialSizeY);
         this.speed = tileMovingSpeed;
+        particle.Play();
     }
 
     public void Hide()
     {
+        particle.Stop();
         spriteRenderer.DOFade(0f, 0.5f).OnComplete(() =>
         {
             LeanPool.Despawn(this, 2f);

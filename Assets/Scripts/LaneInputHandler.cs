@@ -5,11 +5,22 @@ using UnityEngine;
 public class LaneInputHandler : MonoBehaviour
 {
     [SerializeField] private KeyCode inputKey;
+    [SerializeField] private float inputDelay = 0.015f;
+
     private Lane lane;
+    private Collider2D col;
 
     private void Awake()
     {
         lane = GetComponent<Lane>();
+        col = GetComponent<Collider2D>();
+    }
+
+    private void Start()
+    {
+#if !UNITY_ANDROID && !UNITY_IOS
+    inputDelay = 0f;
+#endif
     }
 
     private void Update()
@@ -24,19 +35,53 @@ public class LaneInputHandler : MonoBehaviour
 
         if (currentTile.GetTileType() == TileType.Tap)
         {
-            HandleTap(currentTile, timeStamp, marginOfError, audioTime);
+            HandleTap(currentTile, timeStamp, marginOfError, audioTime, IsInputDown(), IsInputUp());
         }
         else if (currentTile.GetTileType() == TileType.Hold)
         {
-            HandleHold(currentTile, timeStamp, marginOfError, audioTime);
+            HandleHold(currentTile, timeStamp, marginOfError, audioTime, IsInputDown(), IsInputUp());
         }
     }
 
-    private void HandleTap(Tile currentTile, double timeStamp, double marginOfError, double audioTime)
+    private bool IsInputDown()
     {
-        if (Input.GetKeyDown(inputKey))
+        // Keyboard
+        if (Input.GetKeyDown(inputKey)) return true;
+
+        // Touch
+        foreach (Touch touch in Input.touches)
         {
-            double timingDifference = Math.Abs(audioTime - timeStamp);
+            if (touch.phase == TouchPhase.Began && IsTouchOnLane(touch.position))
+                return true;
+        }
+        return false;
+    }
+
+    private bool IsInputUp()
+    {
+        // Keyboard
+        if (Input.GetKeyUp(inputKey)) return true;
+
+        // Touch
+        foreach (Touch touch in Input.touches)
+        {
+            if ((touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) && IsTouchOnLane(touch.position))
+                return true;
+        }
+        return false;
+    }
+
+    private bool IsTouchOnLane(Vector2 screenPosition)
+    {
+        Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPosition);
+        return col.OverlapPoint(worldPos);
+    }
+
+    private void HandleTap(Tile currentTile, double timeStamp, double marginOfError, double audioTime, bool inputDown, bool inputUp)
+    {
+        if (inputDown)
+        {
+            double timingDifference = Math.Abs(audioTime - timeStamp) - inputDelay;
             if (timingDifference < marginOfError)
             {
                 HitType hitType = timingDifference < marginOfError / 2f ? HitType.Perfect : HitType.Good;
@@ -52,9 +97,9 @@ public class LaneInputHandler : MonoBehaviour
         }
     }
 
-    private void HandleHold(Tile currentTile, double timeStamp, double marginOfError, double audioTime)
+    private void HandleHold(Tile currentTile, double timeStamp, double marginOfError, double audioTime, bool inputDown, bool inputUp)
     {
-        if (Input.GetKeyDown(inputKey))
+        if (inputDown)
         {
             double timingDifference = Math.Abs(audioTime - timeStamp);
             if (timingDifference < marginOfError)
@@ -63,7 +108,7 @@ public class LaneInputHandler : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyUp(inputKey) && currentTile.IsHolding)
+        if (inputUp && currentTile.IsHolding)
         {
             currentTile.EndHold();
             lane.AdvanceInputIndex();

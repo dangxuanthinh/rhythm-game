@@ -24,6 +24,9 @@ public class ScoreUI : MonoBehaviour
     {
         ScoreManager.Instance.OnScoreChanged -= UpdateScore;
         Tile.OnTileDestroyed -= PlayTextAnimation;
+
+        scoreText.DOKill();
+        comboText.DOKill();
     }
 
     public void UpdateScore()

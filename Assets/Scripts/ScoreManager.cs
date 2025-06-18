@@ -18,10 +18,13 @@ public class ScoreManager : MonoBehaviour
     public int Combo { get; private set; }
     public int MaxCombo { get; private set; }
 
-    [SerializeField] private int perfectScore = 3;
+    [SerializeField] private int perfectScore = 4;
     [SerializeField] private int goodScore = 2;
 
     public UnityAction OnScoreChanged;
+
+    [SerializeField] private float comboMultiplierStep = 0.05f;
+    [SerializeField] private float maxMultiplier = 5f;
 
     private void Awake()
     {
@@ -50,14 +53,16 @@ public class ScoreManager : MonoBehaviour
 
     public void OnTileDestroyed(Tile tile, HitType hitType)
     {
+        float multiplier = Mathf.Min(1f + Combo * comboMultiplierStep, maxMultiplier);
+
         if (hitType == HitType.Perfect)
         {
-            Score += perfectScore;
+            Score += Mathf.RoundToInt(perfectScore * multiplier);
             IncreaseCombo();
         }
         else if (hitType == HitType.Good)
         {
-            Score += goodScore;
+            Score += Mathf.RoundToInt(goodScore * multiplier);
             IncreaseCombo();
         }
         else if (hitType == HitType.Miss)

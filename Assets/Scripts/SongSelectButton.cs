@@ -26,11 +26,11 @@ public class SongSelectButton : MonoBehaviour
 
         artistName.text = beatmapData.artistName;
 
-        playButton.onClick.AddListener(SelectSong);
+        playButton.onClick.AddListener(SelectSongAndPlay);
         previewSongButton.onClick.AddListener(() => OnButtonClicked?.Invoke(this.beatmapData));
     }
 
-    private void SelectSong()
+    private void SelectSongAndPlay()
     {
         GameManager.Instance.StartGame(beatmapData);
     }

@@ -33,7 +33,7 @@ public class Lane : MonoBehaviour
 
     private void OnDestroy()
     {
-        Tile.OnHoldAutoComplete += OnHoldAutoComplete;
+        Tile.OnHoldAutoComplete -= OnHoldAutoComplete;
     }
 
     private void OnHoldAutoComplete(TileData tileData)
@@ -46,6 +46,11 @@ public class Lane : MonoBehaviour
 
     public void Setup(Note[] notes)
     {
+        if (notes == null)
+        {
+            Debug.LogWarning("MIDI Notes are not initialized, cannot spawn notes");
+            return;
+        }
         foreach (Note note in notes)
         {
             if(note.NoteName != NoteName.F && note.NoteName != NoteName.G && note.NoteName != NoteName.A && note.NoteName != NoteName.B)

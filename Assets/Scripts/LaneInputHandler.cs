@@ -18,7 +18,7 @@ public class LaneInputHandler : MonoBehaviour
     private void Start()
     {
 #if !UNITY_ANDROID && !UNITY_IOS
-    inputDelay = 0f;
+    mobileExtraInputWindow = 0f;
 #endif
     }
 

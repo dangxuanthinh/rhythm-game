@@ -12,7 +12,7 @@
     - Sporty-O - Let me hit it
     - SynthWulf - Passacaglia
 - After hitting the **Play** button on one of the map, the game will transition to the Gameplay scene
-- The notes will fall downwards, on PC use the keyboard keys **DFJK** to press the notes, holding notes require **holding** down the key
+- The notes will fall downwards, on PC use the keyboard keys **DFJK** to press the notes, holding notes require **holding** down the key. Touch input for mobile is also supported
 - Missing one note will result in Game Over, hitting all the notes will result in a victory when the song ends
 
 ## Beatmap design:

@@ -466,6 +466,7 @@ MonoBehaviour:
   <MarginOfError>k__BackingField: 0.20000000298023224
   <SongDelaySeconds>k__BackingField: 2
   audioSource: {fileID: 805563137}
+  missSound: {fileID: 8300000, guid: bc48916abae814945a7bdc519cd17dd1, type: 3}
 --- !u!82 &805563137
 AudioSource:
   m_ObjectHideFlags: 0
@@ -478,7 +479,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.484
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -15672,7 +15673,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 119.05
+  m_fontSize: 131.6
   m_fontSizeBase: 107.7
   m_fontWeight: 400
   m_enableAutoSizing: 1

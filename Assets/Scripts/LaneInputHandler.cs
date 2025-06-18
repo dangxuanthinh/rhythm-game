@@ -5,8 +5,7 @@ using UnityEngine;
 public class LaneInputHandler : MonoBehaviour
 {
     [SerializeField] private KeyCode inputKey;
-    [SerializeField] private float inputDelay = 0.015f;
-
+    [SerializeField] private float mobileExtraInputWindow = 0.015f;
     private Lane lane;
     private Collider2D col;
 
@@ -49,9 +48,10 @@ public class LaneInputHandler : MonoBehaviour
         if (Input.GetKeyDown(inputKey)) return true;
 
         // Touch
-        foreach (Touch touch in Input.touches)
+        for (int i = 0; i < Input.touchCount; i++)
         {
-            if (touch.phase == TouchPhase.Began && IsTouchOnLane(touch.position))
+            Touch touch = Input.GetTouch(i);
+            if ((touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) && IsTouchOnLane(touch.position))
                 return true;
         }
         return false;
@@ -63,11 +63,13 @@ public class LaneInputHandler : MonoBehaviour
         if (Input.GetKeyUp(inputKey)) return true;
 
         // Touch
-        foreach (Touch touch in Input.touches)
+        for (int i = 0; i < Input.touchCount; i++)
         {
+            Touch touch = Input.GetTouch(i);
             if ((touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) && IsTouchOnLane(touch.position))
                 return true;
         }
+
         return false;
     }
 
@@ -81,7 +83,7 @@ public class LaneInputHandler : MonoBehaviour
     {
         if (inputDown)
         {
-            double timingDifference = Math.Abs(audioTime - timeStamp) - inputDelay;
+            double timingDifference = Math.Abs(audioTime - timeStamp) - mobileExtraInputWindow;
             if (timingDifference < marginOfError)
             {
                 HitType hitType = timingDifference < marginOfError / 2f ? HitType.Perfect : HitType.Good;

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9800b147e16a30d43a22785f5cf76bab, type: 3}
-  m_Name: LEt Me Hit It
+  m_Name: Let Me Hit It
   m_EditorClassIdentifier: 
   music: {fileID: 8300000, guid: b9f4376bc2889c34b83c1a66e442dc70, type: 3}
   midiFilePath: let_me_hit_it.mid

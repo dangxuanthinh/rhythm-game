@@ -53,16 +53,16 @@ public class ScoreManager : MonoBehaviour
 
     public void OnTileDestroyed(Tile tile, HitType hitType)
     {
-        float multiplier = Mathf.Min(1f + Combo * comboMultiplierStep, maxMultiplier);
+        float scoreMultiplier = Mathf.Min(1f + Combo * comboMultiplierStep, maxMultiplier);
 
         if (hitType == HitType.Perfect)
         {
-            Score += Mathf.RoundToInt(perfectScore * multiplier);
+            Score += Mathf.RoundToInt(perfectScore * scoreMultiplier);
             IncreaseCombo();
         }
         else if (hitType == HitType.Good)
         {
-            Score += Mathf.RoundToInt(goodScore * multiplier);
+            Score += Mathf.RoundToInt(goodScore * scoreMultiplier);
             IncreaseCombo();
         }
         else if (hitType == HitType.Miss)

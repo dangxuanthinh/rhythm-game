@@ -55,8 +55,8 @@ public class Lane : MonoBehaviour
         {
             if(note.NoteName != NoteName.F && note.NoteName != NoteName.G && note.NoteName != NoteName.A && note.NoteName != NoteName.B)
             {
-                Debug.Log(note.NoteName);
-                Debug.LogError("CHECK MAP");
+                Debug.LogError($"Invalid Note {note.NoteName}, check midi file");
+                return;
             }
             if (note.NoteName != noteName) continue;
 

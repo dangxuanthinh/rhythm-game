@@ -11,25 +11,18 @@ public class TileVisual : MonoBehaviour
     [SerializeField] private SpriteRenderer noteHoldLineSpriteRenderer;
     [SerializeField] private Color holdNoteTopGradient;
     [SerializeField] private Color tapNoteTopGradient;
-
     [SerializeField] private Color holdNoteBottomGradient;
     [SerializeField] private Color tapNoteBottomGradient;
-
     [SerializeField] private Color missColor;
 
     private Material material;
+    private float initialSizeY;
 
     public const float TILE_BASE_HEIGHT = 1.5f;
-
-    private float initialSizeY;
 
     private void Awake()
     {
         material = spriteRenderer.material;
-    }
-
-    private void OnEnable()
-    {
     }
 
     public void SetupTap()

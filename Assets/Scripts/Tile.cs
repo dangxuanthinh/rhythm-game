@@ -12,8 +12,6 @@ public class Tile : MonoBehaviour
     [SerializeField] private NoteHeldVisual noteHeldVisualPrefab;
     [SerializeField] private TileVisual tileVisual;
 
-    private AudioSource audioSource;
-
     private Vector2 startPosition;
     private Vector2 perfectPosition;
 
@@ -32,11 +30,6 @@ public class Tile : MonoBehaviour
     public static UnityAction<TileData> OnHoldAutoComplete;
     public static UnityAction<Tile, HitType> OnTileDestroyed;
     public static UnityAction OnTileMissed;
-
-    private void Awake()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
 
     private void OnEnable()
     {

@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     private void Start()
     {
         Tile.OnTileMissed += EndGame;

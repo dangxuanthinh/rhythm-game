@@ -3,13 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ScoreUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI comboText;
-
     [SerializeField] private GameObject perfectText;
     [SerializeField] private GameObject greatText;
 
@@ -25,8 +23,8 @@ public class ScoreUI : MonoBehaviour
         ScoreManager.Instance.OnScoreChanged -= UpdateScore;
         Tile.OnTileDestroyed -= PlayTextAnimation;
 
-        scoreText.DOKill();
-        comboText.DOKill();
+        scoreText.rectTransform.DOKill();
+        comboText.rectTransform.DOKill();
     }
 
     public void UpdateScore()
@@ -54,6 +52,7 @@ public class ScoreUI : MonoBehaviour
     private void PlayTextAnimation(Tile tile, HitType hitType)
     {
         if (hitType == HitType.Miss) return;
+        // Disabling and enable makes the animation restart
         perfectText.SetActive(false);
         greatText.SetActive(false);
         if (hitType == HitType.Perfect)

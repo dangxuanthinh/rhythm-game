@@ -15,16 +15,17 @@ public class SongManager : MonoBehaviour
     [field: SerializeField] public float SongDelaySeconds { get; private set; }
 
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip missSound;
 
     private MidiFile midiFile;
-    private bool songDistorted;
-
     private BeatmapData beatmapData;
     private Note[] notes;
     private float songPlayBackTimeOffset;
 
-    public UnityAction OnSongFinished;
+    private bool songDistorted;
     private bool songFinishedNotified = true;
+
+    public UnityAction OnSongFinished;
 
     private void Awake()
     {
@@ -86,13 +87,17 @@ public class SongManager : MonoBehaviour
     private void DistortSong()
     {
         if (songDistorted) return;
+        audioSource.PlayOneShot(missSound);
         songDistorted = true;
         float pitch = 1f;
+        audioSource.DOFade(0f, 2f);
         DOTween.To(() => pitch, x => pitch = x, 0.3f, 1f)
             .OnUpdate(() => audioSource.pitch = pitch).OnComplete(() =>
             {
                 DOVirtual.DelayedCall(0.5f, () =>
                 {
+                    audioSource.DOKill();
+                    audioSource.volume = 0.5f;
                     // Check scene in case the player exits too quickly
                     if (SceneManager.GetActiveScene().name == "Gameplay")
                         audioSource.Stop();

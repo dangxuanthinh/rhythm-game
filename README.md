@@ -44,7 +44,7 @@ if (inputDown)
 
 
 ## Note spawning:
-- The game contains 4 Lanes, a Lane is reponsible for spawning and keeping track of each note, a LaneInputHanlder is attached to each lane to detect input for that lane
+- The game contains 4 Lanes, a Lane is reponsible for spawning and keeping track of each note, a LaneInputHandler is attached to each lane to detect input for that lane
 - Each note spawned has a Tile class attached, the class manages its own movement, tap/hold logic. Each note also has a TileVisual class to handle feedback VFX
 
 ## Design pattern

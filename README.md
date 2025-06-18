@@ -20,9 +20,7 @@ Each map in this game consist of 2 main component
 - An audio file
 - A midi file (.mid)
 
-The midi file is used as a template to spawn notes rhythmically
-I used FL Studio along with its Piano roll tool to place notes for each song and then export the pattern as a midi file to the Unity project
-The midi file contains time stamp for each note, it also contains the length of each note (long notes will be spawned as holding notes)
+The midi file is used as a template to spawn notes rhythmically. I used FL Studio along with its Piano roll tool to place notes for each song and then export the pattern as a midi file to the Unity project. The midi file contains time stamp for each note, it also contains the length of each note (long notes will be spawned as holding notes)
 
 - Each map in the game is defined as a ScriptableObject, it will hold the audio file and midi file path along with some other basic data, a MapCatalog class will load the midi file from StreamingAssets along with all the maps
 - This makes it much easier to add new maps, all we need is an audio file and a midi file
@@ -50,7 +48,7 @@ if (inputDown)
 - Each note spawned has a Tile class attached, the class manages its own movement, tap/hold logic. Each note also has a TileVisual class to handle feedback VFX
 
 ## Design pattern
-The project utilizes the Singleton and Observer pattern, this allows for decoupling and remove dependencies between classes
+The project mainly utilizes the Singleton and Observer pattern, this allows for decoupling and remove dependencies between classes. One clear benefit is that all the UI and background VFX logic does not affect the core gameplay logic, they listen to events fired during the game and update accordingly.
 
 ## External libraries used in the project:
 - [LeanPool](https://assetstore.unity.com/packages/tools/utilities/lean-pool-35666?srsltid=AfmBOornci8W9T76f5De7f59USnpcFLBvNClUPp1WZlutIhlxy_B1eUd) for quick object pooling implementation

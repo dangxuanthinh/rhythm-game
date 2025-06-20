@@ -19,8 +19,10 @@ public class HitParticleHandler : MonoBehaviour
 
     private void SpawnTapParticle(Tile tile, HitType hitType)
     {
+        if (hitType == HitType.Miss) return;
         Vector2 spawnPosition = new Vector2(tile.transform.position.x, Lane.CoordinateY);
         ParticleSystem tapParticle = LeanPool.Spawn(hitParticlePrefab, spawnPosition, Quaternion.identity);
         tapParticle.Play();
+        LeanPool.Despawn(tapParticle, 3f);
     }
 }
